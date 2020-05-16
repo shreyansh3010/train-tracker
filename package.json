@@ -1,0 +1,35 @@
+{
+  "name": "train-tracker",
+  "version": "1.0.0",
+  "description": "tarin-tracker is an app to show realtime position of indian railways train",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreyansh3010/train-tracker.git"
+  },
+  "keywords": [
+    "train",
+    "tracker",
+    "NTES",
+    "indain-railways",
+    "india"
+  ],
+  "author": "shreyansh3010",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shreyansh3010/train-tracker/issues"
+  },
+  "homepage": "https://github.com/shreyansh3010/train-tracker#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
