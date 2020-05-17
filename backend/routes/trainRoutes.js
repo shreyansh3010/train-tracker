@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/:train_no',(req,res)=>{
     trainController.getTrainDetails(req.params.train_no)
     .then((trainDetails)=>{
-        res.send(trainDetails);
+        res.json(trainDetails);
     })
     .catch((error)=>{
         res.status(500).json({message : error})
@@ -14,13 +14,18 @@ router.get('/:train_no',(req,res)=>{
 });
 
 router.get('/:train_no/status',(req,res)=>{
-    trainController.getTrainStatus(req.params.train_no, req.query.startDate)
-    .then((trainDetails)=>{
-        res.send(trainDetails);
-    })
-    .catch((error)=>{
-        res.status(500).json({message : error})
-    });
+    if(req.query.startDate){
+        trainController.getTrainStatus(req.params.train_no, req.query.startDate)
+        .then((trainDetails)=>{
+            res.json(trainDetails[0]);
+        })
+        .catch((error)=>{
+            res.status(500).json({message : error})
+        }); 
+    }
+    else{
+        res.status(400).json({message : "Bas Request"})
+    }
 });
 
 module.exports = router;

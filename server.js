@@ -6,24 +6,25 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const trainRoutes = require('./backend/routes/trainRoutes');
+const viewRoutes = require('./backend/routes/viewRoutes');
+
+const socket = require('./backend/sockets/mainSocket');
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.set('view engine', 'ejs');
 
 app.use(express.static('./public'));
 
-app.use('/api/train',trainRoutes);
+app.use('/api/v1/train', trainRoutes);
 
-app.get("/",(req,res)=>{
-  res.sendFile(__dirname + '/index.html');
-})
+app.use('', viewRoutes);
 
 var server = app.listen(port, () => {
-    console.log('Server is up on port '+port);
+  console.log('Server is up on port ' + port);
 });
-const io = require('socket.io')(server);
-io.on('connection', (socket) => {
-  console.log('a user connected');
-});
+
+socket.socketBootstrap(server);

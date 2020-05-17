@@ -3,11 +3,10 @@ const jsonFormatterService = require('../services/jsonFormatterService');
 
 getTrainDetails = (train_no) => {
     return new Promise((resolve, reject) => {
-        var day_after_tommorow = new Date(new Date().getTime() + 2 * 86400000)
-        var url = `https://enquiry.indianrail.gov.in/ntes/NTES?action=getTrainForDate&trainNo=${train_no}&trainStartDate=${day_after_tommorow.getDate()}/${day_after_tommorow.getMonth() + 1}/${day_after_tommorow.getFullYear()}`
+        var url = `https://enquiry.indianrail.gov.in/ntes/NTES?action=getTrainData&trainNo=${train_no}`
         axios.get(url)
             .then(function (response) {
-                jsonFormatterService.convertToJson(response.data.split('=')[1])
+                jsonFormatterService.getCorrectData(response.data.slice(25))
                     .then((jsonData) => {
                         resolve(jsonData);
                     })
@@ -35,6 +34,7 @@ getTrainStatus = (train_no, startDate) => {
             })
     })
 }
+
 
 
 module.exports = {
