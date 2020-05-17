@@ -25,9 +25,10 @@
   },
   "homepage": "https://github.com/shreyansh3010/train-tracker#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "request": "^2.88.2"
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
