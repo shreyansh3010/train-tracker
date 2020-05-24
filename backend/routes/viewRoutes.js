@@ -3,11 +3,11 @@ const trainController = require('../controllers/trainController');
 
 const router = express.Router();
 
-router.get('/search',(req,res)=>{
+router.get('/',(req,res)=>{
     res.render('index', {page: 'search'});
 });
 
-router.get('/tarin/:train_no/status',(req,res)=>{
+router.get('/train/:train_no/status',(req,res)=>{
     trainController.getTrainDetails(req.params.train_no)
     .then((trainDetails)=>{
         var locals = {

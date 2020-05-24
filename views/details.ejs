@@ -1,21 +1,82 @@
-<div class="row row-cols-1 row-cols-md-2">
-    <div class="col lg-6">
-        <div class="card shadow p-3 mb-5 bg-white rounded">
-            <div class="card-body">
+<style>
+    #train_no {
+        padding: 3px 10px;
+        background-color: #2475B0;
+        color: #ffffff;
+        border-radius: 3px;
+    }
+    #source, #destination { 
+        font-size: 1.8em;
+    }
+    #arrow{
+        width: 100%;
+        height: auto;
+    }
+    @media (max-width: 720px) {
+        #arrow{
+            margin-top: 0.6em;
+        }
+    }
+</style>
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col lg-6">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-md-2">
+                        <div class="col lg-4 md-4">
+                            <span id="train_no"></span>
+                        </div>
+                        <div class="col lg-8 md-8" style="text-align: end">
+                            <span id="train_name"></span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row row-cols-3">
+                        <div class="col lg-4 xs-4 justify-content-md-center">
+                            <center><span id="source"></span></center>
+                        </div>
+                        <div class="col lg-4 xs-4 justify-content-md-center">
+                            <img id="arrow" src="/img/arrowright.png" alt="" srcset="">
+                        </div>
+                        <div class="col lg-4 xs-4 justify-content-md-center">
+                            <center><span id="destination"></span></center>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col lg-6">
-        <div class="card shadow p-3 mb-5 bg-white rounded">
-            <div class="card-body">
+        <div class="col lg-6">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
+    $('#train_no').hide();
+    $('#train_name').hide();
     var socket = io();
-    socket.emit('get_train_status', `{ "train_no" : "<%= req.params.train_no %>", "start_date" : "<%=req.query.startDate%>" }`);
-    socket.on("<%= req.params.train_no %>", function(trainDetails){
+    socket.emit('get_train_status',
+        `{ "train_no" : "<%= req.params.train_no %>", "start_date" : "<%=req.query.startDate%>" }`);
+    socket.on("<%= req.params.train_no %>", function (trainDetails) {
         console.log(trainDetails);
     });
+    $(document).ready(() => {
+        $.ajax({
+            url: `/api/v1/train/<%= req.params.train_no %>`,
+            type: 'GET',
+            dataType: 'json', // added data type
+            success: function (res) {
+                $('#train_no').show()
+                $('#train_name').show()
+                $('#train_no').text(res.trainNo)
+                $('#train_name').text(res.trainName)
+                $('#source').text(res.trainSchedule[0].stnCode)
+                $('#destination').text(res.trainSchedule[res.trainSchedule.length - 1].stnCode);
+                console.log(res);
+            }
+        });
+    })
 </script>

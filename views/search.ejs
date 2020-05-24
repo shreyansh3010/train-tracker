@@ -1,1 +1,53 @@
-<h2>Search</h2>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="row row-cols-1 row-cols-md-3 justify-content-md-center">
+    <div class="col lg-4">
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="train_no">Enter Train No.</label>
+                        <input type="text" class="form-control" aria-describedby="train_no" name="train_no"
+                            placeholder="Train No." maxlength="5" minlength="5">
+                    </div>
+                    <div class="form-group">
+                        <select class="custom-select">
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(()=> {
+        fillDropdown();
+        $('form').on('submit', (e) => {
+            e.preventDefault();
+            window.location.href =
+                `/train/${$("input[type=text]").val()}/status?startDate=${$('select :selected').text()}`
+        })
+    });
+
+    function fillDropdown() {
+        var today = new Date()
+        var yesterday = new Date(today.getTime() - 86400000)
+        var tomorrow = new Date(today.getTime() + 86400000)
+        $("select").append(
+            `<option value="${yesterday.getDate()}/${yesterday.getMonth()+1}/${yesterday.getFullYear()}">${yesterday.getDate()}/${yesterday.getMonth()+1}/${yesterday.getFullYear()}</option>`
+        )
+        $("select").append(
+            `<option value="${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}" selected>${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}</option>`
+        )
+        $("select").append(
+            `<option value="${tomorrow.getDate()}/${tomorrow.getMonth()+1}/${tomorrow.getFullYear()}">${tomorrow.getDate()}/${tomorrow.getMonth()+1}/${tomorrow.getFullYear()}</option>`
+        )
+    }
+</script>
