@@ -302,12 +302,30 @@
         $('#updated_at').text(`${trainDetails.lastUpdated}*`);
         $('.bs-vertical-wizard ul').empty();
         for (var i = 0; i < trainDetails.stations.length; i++) {
-            $('.bs-vertical-wizard ul').append(`<li class="complete prev-step">
-                                                    <a href="#">${trainDetails.stations[i].stnCode}<i class="ico fa fa-check ico-green"></i>
+            if(trainDetails.stations[i].status == "current"){
+                $('.bs-vertical-wizard ul').append(`<li class="current">
+                                                    <a href="#">${!trainDetails.stations[i].stationName ? '' : trainDetails.stations[i].stationName} (${trainDetails.stations[i].stnCode})<i class="ico fa fa-check ico-green"></i>
                                                         <span class="desc">Lorem ipsum dolor sit amet, consectetur
                                                             adipisicing elit. A, cumque.</span>
                                                     </a>
                                                 </li>`)
+            }
+            else if(trainDetails.stations[i].status == "passed"){
+                $('.bs-vertical-wizard ul').append(`<li class= "complete prev-step">
+                                                    <a href="#">${!trainDetails.stations[i].stationName ? '' : trainDetails.stations[i].stationName} (${trainDetails.stations[i].stnCode})<i class="ico fa fa-check ico-green"></i>
+                                                        <span class="desc">Lorem ipsum dolor sit amet, consectetur
+                                                            adipisicing elit. A, cumque.</span>
+                                                    </a>
+                                                </li>`)
+            }
+            else if(trainDetails.stations[i].status == "not_passed"){
+                $('.bs-vertical-wizard ul').append(`<li>
+                                                    <a href="#">${!trainDetails.stations[i].stationName ? '' : trainDetails.stations[i].stationName} (${trainDetails.stations[i].stnCode})</i>
+                                                        <span class="desc">Lorem ipsum dolor sit amet, consectetur
+                                                            adipisicing elit. A, cumque.</span>
+                                                    </a>
+                                                </li>`)
+            }
         }
         console.log(trainDetails);
     });
