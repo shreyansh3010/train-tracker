@@ -45,7 +45,7 @@ fomateJson = (jsonData) => {
     }), 'distance');
     _.forEach(jsonData[0].stations, (station) => {
         var new_station = station;
-        new_station.stationName = _.get(stationService.getStationName(station.stnCode), 'name');
+        new_station.stationName = _.get(stationService.getStationName(station.stnCode), 'properties.name');
         if (curr_station > new_station.distance) {
             new_station.status = 'passed'
         }
