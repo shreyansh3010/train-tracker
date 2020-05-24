@@ -16,6 +16,16 @@
         height: auto;
     }
 
+    #updated_at{
+        margin-top: -7px;
+        font-weight: bold;
+    }
+
+    .update_time{
+        font-size: 0.8em;
+        margin-bottom: 2px !important;
+    }
+
     @media (max-width: 720px) {
         #arrow {
             margin-top: 0.6em;
@@ -86,13 +96,144 @@
             height: 50px;
         }
     }
+
+
+    .bs-vertical-wizard {
+        padding-bottom: 50px;
+    }
+
+    .bs-vertical-wizard ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .bs-vertical-wizard ul>li {
+        display: block;
+        position: relative;
+    }
+
+    .bs-vertical-wizard ul>li>a {
+        display: block;
+        padding: 10px 10px 10px 40px;
+        color: #333c4e;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: .8px;
+    }
+
+    .bs-vertical-wizard ul>li>a:before {
+        content: '';
+        position: absolute;
+        width: 1px;
+        height: calc(100% - 25px);
+        background-color: #bdc2ce;
+        left: 13px;
+        bottom: -9px;
+        z-index: 3;
+    }
+
+    .bs-vertical-wizard ul>li>a .ico {
+        pointer-events: none;
+        font-size: 14px;
+        position: absolute;
+        left: 10px;
+        top: 15px;
+        z-index: 2;
+    }
+
+    .bs-vertical-wizard ul>li>a:after {
+        content: '';
+        position: absolute;
+        border: 2px solid #bdc2ce;
+        border-radius: 50%;
+        top: 14px;
+        left: 6px;
+        width: 16px;
+        height: 16px;
+        z-index: 3;
+    }
+
+    .bs-vertical-wizard ul>li>a .desc {
+        display: block;
+        color: #bdc2ce;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1.8;
+        letter-spacing: .8px;
+    }
+
+    .bs-vertical-wizard ul>li.complete>a:before {
+        background-color: #5cb85c;
+        opacity: 1;
+        height: calc(100% - 25px);
+        bottom: -9px;
+    }
+
+    .bs-vertical-wizard ul>li.complete>a:after {
+        display: none;
+    }
+
+    .bs-vertical-wizard ul>li.locked>a:after {
+        display: none;
+    }
+
+    .bs-vertical-wizard ul>li:last-child>a:before {
+        display: none;
+    }
+
+    .bs-vertical-wizard ul>li.complete>a .ico {
+        left: 8px;
+    }
+
+    .bs-vertical-wizard ul>li>a .ico.ico-green {
+        color: #5cb85c;
+    }
+
+    .bs-vertical-wizard ul>li>a .ico.ico-muted {
+        color: #bdc2ce;
+    }
+
+    .bs-vertical-wizard ul>li.current {
+        background-color: #fff;
+    }
+
+    .bs-vertical-wizard ul>li.current>a:before {
+        background-color: #ffe357;
+        opacity: 1;
+    }
+
+    .bs-vertical-wizard ul>li.current>a:after {
+        border-color: #ffe357;
+        background-color: #ffe357;
+        opacity: 1;
+    }
+
+    .bs-vertical-wizard ul>li.current:after,
+    .bs-vertical-wizard ul>li.current:before {
+        left: 100%;
+        top: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .bs-vertical-wizard ul>li.current:after {
+        border-color: rgba(255, 255, 255, 0);
+        border-left-color: #fff;
+        border-width: 10px;
+        margin-top: -10px;
+    }
 </style>
 <div class="container">
     <div class="row row-cols-1 row-cols-md-2">
         <div class="col lg-6">
             <div class="card shadow p-3 mb-5 bg-white rounded">
                 <div class="card-body">
-                    <div class="row row-cols-2 row-cols-md-2">
+                    <div class="row">
                         <div class="col lg-4 md-4">
                             <span id="train_no"></span>
                         </div>
@@ -118,13 +259,33 @@
         <div class="col lg-6">
             <div class="card shadow p-3 mb-5 bg-white rounded">
                 <div class="card-body">
-                    <div class="row row-cols-1 row-cols-md-1">
-                        <div class="col lg-12 md-12">
+                    <div class="row row-cols-2 row-cols-md-2">
+                        <div class="col lg-6 md-6">
                             <div class="example">
                                 <p>Live</p>
                                 <div class="dot"></div>
                             </div>
                         </div>
+                        <div class="col lg-6 md-6" style="text-align: end">
+                            <p class="update_time">Updated At</p>
+                            <p class="update_time" id="updated_at"></p>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-1">
+                        <div class="col lg-12 md-12">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col sm-12 md-12">
+                                        <div class="bs-vertical-wizard">
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -138,6 +299,16 @@
     socket.emit('get_train_status',
         `{ "train_no" : "<%= req.params.train_no %>", "start_date" : "<%=req.query.startDate%>" }`);
     socket.on("<%= req.params.train_no %>", function (trainDetails) {
+        $('#updated_at').text(`${trainDetails.lastUpdated}*`);
+        $('.bs-vertical-wizard ul').empty();
+        for (var i = 0; i < trainDetails.stations.length; i++) {
+            $('.bs-vertical-wizard ul').append(`<li class="complete prev-step">
+                                                    <a href="#">${trainDetails.stations[i].stnCode}<i class="ico fa fa-check ico-green"></i>
+                                                        <span class="desc">Lorem ipsum dolor sit amet, consectetur
+                                                            adipisicing elit. A, cumque.</span>
+                                                    </a>
+                                                </li>`)
+        }
         console.log(trainDetails);
     });
     $(document).ready(() => {
